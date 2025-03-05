@@ -66,10 +66,26 @@ function Get-CompanyInfo {
             $nom_raison_sociale = $response.results[0].nom_raison_sociale
             $date_creation = $response.results[0].date_creation
             $activite_principale = $response.results[0].activite_principale
+            $siret = $response.results[0].siege.siret
             
+            $content = @"
+| NOM | $nom_raison_sociale |
+| SIRET | $siret |
+| Date de création | $date_creation |
+| Activité principale | $activite_principale |
+
+Recherche effectuée sur le numéro SIREN $siren
+"@
+
+            Write-Host $content
+
             # GENERATION DU DOCUMENT, ENVOI DU MAIL
-            Write-Host $nom_raison_sociale, $date_creation, $activite_principale
-            
+            $outputFile = "$Env:HOME/Lab/pwsh-2025/output"
+            $fileName = $siren + ".txt"
+            Write-Host "Le nom du fichier : " $fileName
+            $outputFilePath = Join-Path $outputFile -ChildPath $fileName
+            $content | Out-File -FilePath $outputFilePath
+            Write-Host "Le chemin du fichier : " $outputFilePath
             Write-Host "Merci d'avoir utilisé Dis-Siren, à bientôt !"
             exit
         }
